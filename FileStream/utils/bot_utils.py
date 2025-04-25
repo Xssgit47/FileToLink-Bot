@@ -1,12 +1,12 @@
 from pyrogram.errors import UserNotParticipant, FloodWait
 from pyrogram.enums.parse_mode import ParseMode
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message
-from FileStream.utils.translation import LANG
 from FileStream.utils.database import Database
 from FileStream.utils.human_readable import humanbytes
 from FileStream.config import Telegram, Server
 from FileStream.bot import FileStream
 import asyncio
+import re
 from typing import (
     Union
 )
@@ -79,6 +79,11 @@ async def is_user_joined(bot, message: Message):
 
 #---------------------[ PRIVATE GEN LINK + CALLBACK ]---------------------#
 
+def format_pretty_link(text, url):
+    escape_chars = r'_*[]()~`>#+-=|{}.!'
+    escaped_text = ''.join(f'\\{char}' if char in escape_chars else char for char in text)
+    return f"[{escaped_text}]({url})"
+
 async def gen_link(_id):
     file_info = await db.get_file(_id)
     file_name = file_info['file_name']
@@ -89,29 +94,28 @@ async def gen_link(_id):
     stream_link = f"{Server.URL}dl/{_id}"
     file_link = f"https://t.me/{FileStream.username}?start=file_{_id}"
 
-    if "video" in mime_type:
-        stream_text = LANG.STREAM_TEXT.format(file_name, file_size, stream_link, page_link, file_link)
-        reply_markup = InlineKeyboardMarkup(
-            [
-                [InlineKeyboardButton("sᴛʀᴇᴀᴍ", url=page_link), InlineKeyboardButton("ᴅᴏᴡɴʟᴏᴀᴅ", url=stream_link)],
-                [InlineKeyboardButton("ɢᴇᴛ ғɪʟᴇ", url=file_link), InlineKeyboardButton("ʀᴇᴠᴏᴋᴇ ғɪʟᴇ", callback_data=f"msgdelpvt_{_id}")],
-                [InlineKeyboardButton("ᴄʟᴏsᴇ", callback_data="close")]
-            ]
-        )
-    else:
-        stream_text = LANG.STREAM_TEXT_X.format(file_name, file_size, stream_link, file_link)
-        reply_markup = InlineKeyboardMarkup(
-            [
-                [InlineKeyboardButton("ᴅᴏᴡɴʟᴏᴀᴅ", url=stream_link)],
-                [InlineKeyboardButton("ɢᴇᴛ ғɪʟᴇ", url=file_link), InlineKeyboardButton("ʀᴇᴠᴏᴋᴇ ғɪʟᴇ", callback_data=f"msgdelpvt_{_id}")],
-                [InlineKeyboardButton("ᴄʟᴏsᴇ", callback_data="close")]
-            ]
-        )
+    pretty_dl = format_pretty_link("📥 Download", stream_link)
+    pretty_stream = format_pretty_link("▶️ Stream", page_link) if "video" in mime_type else ""
+    pretty_file = format_pretty_link("📁 Get File", file_link)
+
+    stream_text = f"""
+**📂 File:** `{file_name}`
+**📦 Size:** `{file_size}`
+
+{pretty_dl}
+{pretty_stream}
+{pretty_file}
+"""
+
+    reply_markup = InlineKeyboardMarkup([
+        [InlineKeyboardButton("📥 Download", url=stream_link)],
+        [InlineKeyboardButton("📁 Get File", url=file_link), 
+         InlineKeyboardButton("🗑 Revoke", callback_data=f"msgdelpvt_{_id}")],
+        [InlineKeyboardButton("❌ Close", callback_data="close")]
+    ])
     return reply_markup, stream_text
 
-#---------------------[ GEN STREAM LINKS FOR CHANNEL ]---------------------#
-
-async def gen_linkx(m:Message , _id, name: list):
+async def gen_linkx(m: Message, _id, name: list):
     file_info = await db.get_file(_id)
     file_name = file_info['file_name']
     mime_type = file_info['mime_type']
@@ -119,22 +123,21 @@ async def gen_linkx(m:Message , _id, name: list):
 
     page_link = f"{Server.URL}watch/{_id}"
     stream_link = f"{Server.URL}dl/{_id}"
-    file_link = f"https://t.me/{FileStream.username}?start=file_{_id}"
 
-    if "video" in mime_type:
-        stream_text= LANG.STREAM_TEXT_X.format(file_name, file_size, stream_link, page_link)
-        reply_markup = InlineKeyboardMarkup(
-            [
-                [InlineKeyboardButton("sᴛʀᴇᴀᴍ", url=page_link), InlineKeyboardButton("ᴅᴏᴡɴʟᴏᴀᴅ", url=stream_link)]
-            ]
-        )
-    else:
-        stream_text= LANG.STREAM_TEXT_X.format(file_name, file_size, stream_link, file_link)
-        reply_markup = InlineKeyboardMarkup(
-            [
-                [InlineKeyboardButton("ᴅᴏᴡɴʟᴏᴀᴅ", url=stream_link)]
-            ]
-        )
+    pretty_dl = format_pretty_link("📥 Download", stream_link)
+    pretty_stream = format_pretty_link("▶️ Stream", page_link) if "video" in mime_type else ""
+
+    stream_text = f"""
+**📂 File:** `{file_name}`
+**📦 Size:** `{file_size}`
+
+{pretty_dl}
+{pretty_stream}
+"""
+
+    reply_markup = InlineKeyboardMarkup([
+        [InlineKeyboardButton("📥 Download", url=stream_link)]
+    ])
     return reply_markup, stream_text
 
 #---------------------[ USER BANNED ]---------------------#
