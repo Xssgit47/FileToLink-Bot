@@ -1,6 +1,6 @@
 <h1 align="center">FileStreamBot</h1>
 <p align="center">
-  <a href="https://github.com/Avipatilpro/FileStreamBot">
+  <a href="https://github.com/Xssgit47/FileToLink-Bot">
     <img src="https://graph.org/file/80d1f94e81bbc1acadb36.jpg" alt="Cover Image" width="550">
   </a>
 </p>  
