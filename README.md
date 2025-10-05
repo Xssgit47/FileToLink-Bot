@@ -17,7 +17,7 @@
 ### 🍁 About :
 
 <p align="center">
-    <a href="https://github.com/Avipatilpro/FileStreamBot">
+    <a href="https://github.com/Xssgit47/FileStreamBot">
         <img src="https://i.ibb.co/ZJzJ9Hq/link-3x.png" height="100" width="100" alt="FileStreamBot Logo">
     </a>
 </p>
@@ -49,7 +49,7 @@
 <br>
 
 ```sh
-git clone https://github.com/avipatilpro/FileStreamBot
+git clone https://github.com/Xssgit47/FileStreamBot
 cd FileStreamBot
 python3 -m venv ./venv
 . ./venv/bin/activate
@@ -75,7 +75,7 @@ python3 -m FileStream
 <br>
 * Clone the repository:
 ```sh
-git clone https://github.com/avipatilpro/FileStreamBot
+git clone https://github.com/Xssgit47/FileStreamBot
 cd FileStreamBot
 ```
 * Build own Docker image:
@@ -188,13 +188,10 @@ PORT = 8080
 
 ### ❤️ Thanks To :
 
-- [**Me**](https://github.com/AvishkarPatil) : Owner of This FileStreamBot
-- [**Deekshith SH**](https://github.com/DeekshithSH) : for some modules.
-- [**EverythingSuckz**](https://github.com/EverythingSuckz) : for his [FileStreamBot](https://github.com/EverythingSuckz/FileStreamBot)
-- [**Biisal**](https://github.com/biisal) : for Stream Page UI
+- [**Me**](https://github.com/Xssgit47) : Owner of This FileStreamBot
 
 ---
-<h4 align='center'>© 2024 Aνιѕнкαя Pαтιℓ</h4>
+<h4 align='center'>© 2025 FNxDANGER </h4>
 
 
 
